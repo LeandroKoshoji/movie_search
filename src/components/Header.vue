@@ -3,10 +3,10 @@
     <div class="container">
       <div class="header">
         <router-link :to="{ name: 'Home' }" class="logo">
-          <h1>Movie_Search</h1>
+          <h1>Busque por Filmes</h1>
         </router-link>
         <router-link to="#" class="favorite-link">
-          <span>My Favorites</span>
+          <span>Meus Favoritos</span>
           <i class="fas fa-heart"></i>
         </router-link>
       </div>
