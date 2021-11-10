@@ -37,7 +37,7 @@ body {
 }
 
 .container {
-  width: Min(90%, 80rem);
+  width: Min(95%, 80rem);
   margin: 0 auto;
 }
 
