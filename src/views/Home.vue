@@ -39,7 +39,12 @@ export default {
     grid-template-columns: repeat(auto-fit, 200px);
     gap: 1rem;
     row-gap: 2rem;
-    justify-content: center;
+    justify-content: space-between;
+
+    @media (max-width: 575.98px) {
+      justify-content: center;
+      grid-template-columns: 300px;
+    }
   }
 }
 </style>
