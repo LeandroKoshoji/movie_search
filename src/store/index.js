@@ -12,7 +12,7 @@ export default new Vuex.Store({
       isError: false,
       errorMessage: "",
     },
-    pages: "",
+    fetchedTotalPages: "",
   },
   mutations: {
     setMoviesInDisplay(state, movies) {
@@ -26,19 +26,34 @@ export default new Vuex.Store({
       state.error.errorMessage = payload.message;
     },
     setPages(state, pages) {
-      state.pages = pages;
+      state.fetchedTotalPages = pages;
     },
   },
   actions: {
-    async fetchTriggeredMovies({ commit }, payload) {
+    async fetchTriggeredMovies({ commit }, { trigger, page }) {
       try {
-        console.log("FUNCAO:", payload.trigger, payload.page);
         commit("setLoading", true);
         const res = await fetch(
-          `${BASE_URL}${payload.trigger}?api_key=${API_KEY}&language=pt-BR&region=br&page=${payload.page}`
+          `${BASE_URL}movie/${trigger}?api_key=${API_KEY}&language=pt-BR&region=br&page=${page}`
         );
         const data = await res.json();
-        console.log("trigger:", data);
+        commit("setMoviesInDisplay", data.results);
+        commit("setPages", data.total_pages);
+      } catch (err) {
+        commit("setError", err);
+      } finally {
+        commit("setLoading", false);
+      }
+    },
+    async fetchQueryMovies({ commit }, { query, page }) {
+      try {
+        commit("setLoading", true);
+        const userQuery = query.toLowerCase().trim();
+        const res = await fetch(
+          `${BASE_URL}search/movie?api_key=${API_KEY}&language=pt-BR&query=${userQuery}&page=${page}&include_adult=false`
+        );
+        const data = await res.json();
+        console.log("search", data);
         commit("setMoviesInDisplay", data.results);
         commit("setPages", data.total_pages);
       } catch (err) {
