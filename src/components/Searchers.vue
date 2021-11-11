@@ -1,5 +1,5 @@
 <template>
-  <form class="form">
+  <form class="form" @submit.prevent="handleSubmit()">
     <input
       type="text"
       placeholder="Busque por um Filme"
@@ -19,6 +19,12 @@ export default {
     return {
       query: "",
     };
+  },
+  methods: {
+    handleSubmit() {
+      this.$emit("search-query", this.query);
+      this.query = "";
+    },
   },
 };
 </script>
