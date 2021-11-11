@@ -14,31 +14,31 @@
       <input
         type="radio"
         name="movie-trigger"
-        id="topRated"
-        value="topRated"
+        id="top_rated"
+        value="top_rated"
         v-model="triggerRadio"
       />
-      <label for="topRated">Melhores</label>
+      <label for="top_rated">Melhores</label>
     </div>
     <div class="movie-nav--item">
       <input
         type="radio"
         name="movie-trigger"
-        id="onTheather"
-        value="onTheather"
+        id="now_playing"
+        value="now_playing"
         v-model="triggerRadio"
       />
-      <label for="onTheather">Nos Cinemas</label>
+      <label for="now_playing">Nos Cinemas</label>
     </div>
     <div class="movie-nav--item">
       <input
         type="radio"
         name="movie-trigger"
-        id="upComming"
-        value="upComming"
+        id="upcoming"
+        value="upcoming"
         v-model="triggerRadio"
       />
-      <label for="upComming">Em Breve</label>
+      <label for="upcoming">Em Breve</label>
     </div>
   </div>
 </template>
@@ -50,6 +50,14 @@ export default {
     return {
       triggerRadio: "",
     };
+  },
+  watch: {
+    triggerRadio() {
+      this.$emit("radio-trigger", this.triggerRadio);
+    },
+  },
+  created() {
+    this.triggerRadio = "popular";
   },
 };
 </script>
