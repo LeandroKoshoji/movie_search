@@ -1,5 +1,6 @@
 <template>
   <div class="movie-details">
+    <TrailerModal v-show="showTrailerModal" />
     <div class="container">
       <div class="movie">
         <div class="movie--banner">
@@ -37,6 +38,10 @@
               }}{{ index === movie.genres.length - 1 ? "." : ", " }}
             </span>
           </div>
+          <button class="trailer" @click="toggleTrailerModal()">
+            <i class="fas fa-play"></i>
+            Trailer
+          </button>
           <div class="overview">
             <p v-if="movie.overview">{{ movie.overview }}</p>
             <p v-else>Sinópse não disponível</p>
@@ -58,16 +63,22 @@
   </div>
 </template>
 <script>
+import TrailerModal from "../components/TrailerModal.vue";
 import { mapActions } from "vuex";
 export default {
   name: "MovieDetails",
+  components: { TrailerModal },
   data() {
     return {
       movie: {},
+      showTrailerModal: true,
     };
   },
   methods: {
     ...mapActions(["fetchMovieDetails"]),
+    toggleTrailerModal() {
+      this.showTrailerModal = !this.showTrailerModal;
+    },
   },
   async beforeMount() {
     const movieID = this.$route.params.id;
@@ -83,7 +94,13 @@ export default {
 
   .movie {
     display: flex;
+    gap: 2rem;
+    justify-content: space-between;
 
+    @media (max-width: 1199.98px) {
+      flex-direction: column;
+      align-items: center;
+    }
     &--banner {
       max-width: 500px;
       width: 100%;
@@ -95,11 +112,6 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding-left: 2rem;
-
-      // & > * {
-      //   margin-bottom: 1rem;
-      // }
 
       .original-title {
         font-size: 0.75rem;
@@ -113,7 +125,7 @@ export default {
       }
 
       .line-infos {
-        margin: 1rem 0;
+        margin-bottom: 1rem;
 
         span {
           margin-right: 1rem;
@@ -132,12 +144,30 @@ export default {
         color: var(--clr-accent);
       }
 
+      .trailer {
+        background: white;
+        width: fit-content;
+        padding: 0.25rem 0.5rem;
+        border: none;
+        border-radius: 5px;
+        color: var(--clr-accent);
+        cursor: pointer;
+        transition: opacity ease 0.5s;
+        margin: 1rem 0;
+        box-shadow: var(--box-shadow);
+
+        &:hover,
+        &:active {
+          opacity: 0.8;
+        }
+      }
       .overview {
         display: flex;
         align-items: center;
         text-align: justify;
         flex-grow: 1;
         line-height: 2;
+        margin-bottom: 1rem;
       }
     }
   }
