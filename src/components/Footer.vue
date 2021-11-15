@@ -21,6 +21,7 @@ export default {};
 
 <style lang="scss" scoped>
 footer {
+  height: 80px;
   margin-top: 5rem;
   padding: 1rem 0;
   p,
