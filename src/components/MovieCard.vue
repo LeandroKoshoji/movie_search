@@ -1,25 +1,28 @@
 <template>
-  <div class="movie-card">
-    <div class="movie-card--rating">{{ movie.vote_average }}</div>
-    <img
-      v-if="movie.poster_path"
-      class="movie-card--banner"
-      :src="`https://image.tmdb.org/t/p/w300/${movie.poster_path}`"
-      :alt="`${movie.title} banner`"
-    />
-    <img
-      v-else
-      class="movie-card--banner"
-      src="https://via.placeholder.com/300x450"
-      :alt="`${movie.title} banner`"
-    />
-    <div class="movie-card--infos">
-      <h4 class="movie-card--infos--title">{{ movie.title }}</h4>
-      <div class="movie-card--infos--year">
-        {{ movie.release_date.split("-")[0] }}
+  <router-link :to="{ name: 'MovieDetails', params: { id: movie.id } }">
+    <div class="movie-card">
+      <div class="movie-card--rating">{{ movie.vote_average }}</div>
+      <!-- //TODO: FallBack Image para substituir o placeholder -->
+      <img
+        v-if="movie.poster_path"
+        class="movie-card--banner"
+        :src="`https://image.tmdb.org/t/p/w300/${movie.poster_path}`"
+        :alt="`${movie.title} banner`"
+      />
+      <img
+        v-else
+        class="movie-card--banner"
+        src="https://via.placeholder.com/300x450"
+        :alt="`${movie.title} banner`"
+      />
+      <div class="movie-card--infos">
+        <h4 class="movie-card--infos--title">{{ movie.title }}</h4>
+        <div class="movie-card--infos--year">
+          {{ movie.release_date.split("-")[0] }}
+        </div>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
