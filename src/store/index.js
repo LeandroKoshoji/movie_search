@@ -62,6 +62,21 @@ export default new Vuex.Store({
         setTimeout(commit("setLoading", false), 5000);
       }
     },
+    async fetchMovieDetails({ commit }, movieID) {
+      try {
+        commit("setLoading", true);
+        const res = await fetch(
+          `${BASE_URL}movie/${movieID}?api_key=${API_KEY}&language=pt-BR&append_to_response=videos,cast`
+        );
+        const data = await res.json();
+        console.log("details:", data);
+        return data;
+      } catch (err) {
+        commit("setError", err);
+      } finally {
+        commit("setLoading", false);
+      }
+    },
   },
   modules: {},
 });
