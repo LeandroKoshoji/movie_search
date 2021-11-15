@@ -1,15 +1,23 @@
 <template>
   <div class="home">
     <div class="container">
-      <Searchers />
+      <Searchers
+        @search-query="
+          fetchQueryMovies({ query: $event }),
+            setTriggeredMovie(null),
+            setQuery($event)
+        "
+      />
       <MovieTrigger
         @radio-trigger="
           fetchTriggeredMovies({ trigger: $event }),
             setTriggeredMovie($event),
-            setFirstPage()
+            setFirstPage(),
+            setQuery(null)
         "
       />
-      <div class="movies-grid">
+      <Loading v-if="loading" />
+      <div class="movies-grid" v-else>
         <MovieCard
           v-for="movie in moviesInDisplay"
           :key="movie.id"
@@ -18,40 +26,53 @@
         <div class="movies-pagination">
           <button
             class="page"
-            v-show="defaultPage == pages"
-            @click="incrementPageIndex(-1)"
+            v-show="
+              defaultPage == fetchedTotalPages ||
+              (defaultPage < fetchedTotalPages && defaultPage != 1)
+            "
+            @click="setFirstPage()"
           >
-            1
+            Inicio
+          </button>
+          <span
+            v-show="
+              defaultPage == fetchedTotalPages ||
+              (defaultPage < fetchedTotalPages && defaultPage != 1)
+            "
+            class="page--spacing"
+            >...</span
+          >
+          <button
+            class="page"
+            v-show="defaultPage > 1"
+            @click="setPageIndex(-1)"
+          >
+            {{ defaultPage - 1 }}
           </button>
           <button class="page selected" disabled>{{ defaultPage }}</button>
           <button
             class="page"
-            @click="incrementPageIndex(1)"
-            v-show="defaultPage + 1 < pages"
+            @click="setPageIndex(1)"
+            v-show="defaultPage + 1 < fetchedTotalPages"
           >
             {{ defaultPage + 1 }}
           </button>
           <button
             class="page"
-            @click="incrementPageIndex(2)"
-            v-show="defaultPage + 2 < pages"
+            @click="setPageIndex(2)"
+            v-show="defaultPage + 2 < fetchedTotalPages"
           >
             {{ defaultPage + 2 }}
           </button>
+          <span v-show="defaultPage != fetchedTotalPages" class="page--spacing"
+            >...</span
+          >
           <button
             class="page"
-            @click="incrementPageIndex(3)"
-            v-show="defaultPage + 3 < pages"
+            @click="setPageIndex(fetchedTotalPages - defaultPage)"
+            v-show="defaultPage != fetchedTotalPages"
           >
-            {{ defaultPage + 3 }}
-          </button>
-          <span v-show="defaultPage != pages" class="page--spacing">...</span>
-          <button
-            class="page"
-            @click="incrementPageIndex(pages - defaultPage)"
-            v-show="defaultPage != pages"
-          >
-            {{ pages }}
+            {{ fetchedTotalPages }}
           </button>
         </div>
       </div>
@@ -63,27 +84,25 @@
 import MovieTrigger from "../components/MovieTrigger.vue";
 import Searchers from "../components/Searchers.vue";
 import MovieCard from "../components/MovieCard.vue";
+import Loading from "../components/Loading.vue";
 import { mapActions, mapState } from "vuex";
 export default {
   name: "Home",
-  components: { MovieTrigger, Searchers, MovieCard },
+  components: { MovieTrigger, Searchers, MovieCard, Loading },
   data() {
     return {
       defaultPage: 1,
       triggeredMovie: "",
+      queryValue: "",
     };
   },
   computed: {
-    ...mapState(["moviesInDisplay", "pages"]),
+    ...mapState(["moviesInDisplay", "fetchedTotalPages", "loading"]),
   },
   methods: {
-    ...mapActions(["fetchTriggeredMovies"]),
-    incrementPageIndex(value) {
-      if (value == -1) {
-        this.defaultPage = 1;
-        return;
-      }
-      return (this.defaultPage = this.defaultPage + value);
+    ...mapActions(["fetchTriggeredMovies", "fetchQueryMovies"]),
+    setPageIndex(value) {
+      this.defaultPage = this.defaultPage + value;
     },
     setTriggeredMovie(value) {
       this.triggeredMovie = value;
@@ -91,11 +110,21 @@ export default {
     setFirstPage() {
       this.defaultPage = 1;
     },
+    setQuery(value) {
+      this.queryValue = value;
+    },
   },
   watch: {
     async defaultPage() {
-      await this.fetchTriggeredMovies({
-        trigger: this.triggeredMovie,
+      if (this.triggeredMovie) {
+        await this.fetchTriggeredMovies({
+          trigger: this.triggeredMovie,
+          page: this.defaultPage,
+        });
+        return;
+      }
+      return await this.fetchQueryMovies({
+        query: this.queryValue,
         page: this.defaultPage,
       });
     },
@@ -125,11 +154,12 @@ export default {
     .movies-pagination {
       position: absolute;
       bottom: -3rem;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 0;
+      right: 0;
+      text-align: center;
 
       .page--spacing {
-        margin: 0 1rem;
+        margin: 0 0.5rem;
       }
 
       .page {
@@ -145,7 +175,10 @@ export default {
           background-color: var(--clr-accent);
         }
 
-        &:nth-child(5) {
+        &:nth-child(6) {
+          margin-right: 0;
+        }
+        &:nth-child(1) {
           margin-right: 0;
         }
       }

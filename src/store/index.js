@@ -59,7 +59,7 @@ export default new Vuex.Store({
       } catch (err) {
         commit("setError", err);
       } finally {
-        commit("setLoading", false);
+        setTimeout(commit("setLoading", false), 5000);
       }
     },
   },
