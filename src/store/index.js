@@ -41,6 +41,7 @@ export default new Vuex.Store({
         commit("setPages", data.total_pages);
       } catch (err) {
         commit("setError", err);
+        console.log(err.message);
       } finally {
         commit("setLoading", false);
       }
@@ -53,11 +54,11 @@ export default new Vuex.Store({
           `${BASE_URL}search/movie?api_key=${API_KEY}&language=pt-BR&query=${userQuery}&page=${page}&include_adult=false`
         );
         const data = await res.json();
-        console.log("search", data);
         commit("setMoviesInDisplay", data.results);
         commit("setPages", data.total_pages);
       } catch (err) {
         commit("setError", err);
+        console.log(err.message);
       } finally {
         setTimeout(commit("setLoading", false), 5000);
       }
@@ -69,10 +70,10 @@ export default new Vuex.Store({
           `${BASE_URL}movie/${movieID}?api_key=${API_KEY}&language=pt-BR&append_to_response=videos,cast`
         );
         const data = await res.json();
-        console.log("details:", data);
         return data;
       } catch (err) {
         commit("setError", err);
+        console.log(err.message);
       } finally {
         commit("setLoading", false);
       }
