@@ -5,9 +5,9 @@
         <router-link :to="{ name: 'Home' }" class="logo">
           <h1>Busque por Filmes</h1>
         </router-link>
-        <router-link to="#" class="favorite-link">
-          <span>Meus Favoritos</span>
-          <i class="fas fa-heart"></i>
+        <router-link :to="{ name: 'Home' }" v-if="$route.name !== 'Home'">
+          <i class="fas fa-long-arrow-alt-left"></i>
+          <span class="router-span">Home</span>
         </router-link>
       </div>
     </div>
@@ -33,24 +33,12 @@ header {
     justify-content: space-between;
     align-items: center;
 
-    .favorite-link {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 1.1rem;
+    @media (max-width: 575.98px) {
+      flex-direction: column;
+    }
 
-      @media (max-width: 575.98px) {
-        i {
-          font-size: 1.5rem;
-        }
-        span {
-          display: none;
-        }
-      }
-      &:hover,
-      &:active {
-        color: var(--clr-txt);
-      }
+    .router-span {
+      padding-left: 0.5rem;
     }
   }
 }
