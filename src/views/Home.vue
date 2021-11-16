@@ -136,6 +136,7 @@ export default {
 .home {
   min-height: calc(100vh - 100px);
   padding-top: 3rem;
+  margin-bottom: 5rem;
 
   .movies-grid {
     position: relative;
