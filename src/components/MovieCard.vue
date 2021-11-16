@@ -2,7 +2,6 @@
   <router-link :to="{ name: 'MovieDetails', params: { id: movie.id } }">
     <div class="movie-card">
       <div class="movie-card--rating">{{ movie.vote_average }}</div>
-      <!-- //TODO: FallBack Image para substituir o placeholder -->
       <img
         v-if="movie.poster_path"
         class="movie-card--banner"
@@ -12,8 +11,8 @@
       <img
         v-else
         class="movie-card--banner"
-        src="https://via.placeholder.com/300x450"
-        :alt="`${movie.title} banner`"
+        :src="require('@/assets/images/banner-indisponivel.png')"
+        alt="Banner Indisponivel"
       />
       <div class="movie-card--infos">
         <h4 class="movie-card--infos--title">{{ movie.title }}</h4>
@@ -59,7 +58,7 @@ export default {
     align-items: center;
     border-radius: 5px;
     top: -10px;
-    left: 0;
+    left: -5px;
     height: 20px;
     width: 50px;
     background-color: var(--clr-accent);
