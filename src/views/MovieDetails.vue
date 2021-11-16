@@ -6,13 +6,18 @@
       :link="movie.videos.results[0].key.trim()"
     />
     <div class="container">
-      <div class="movie">
+      <Loading v-if="loading" />
+      <div class="movie" v-else>
         <div class="movie--banner">
-          <!-- // TODO: Static Poster - (FallBack) -->
           <img
             v-if="movie.poster_path"
             :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`"
             :alt="`${movie.title} banner`"
+          />
+          <img
+            v-else
+            :src="require('@/assets/images/banner-indisponivel.png')"
+            alt="Banner Indisponivel"
           />
         </div>
         <div class="movie--infos">
@@ -72,16 +77,20 @@
   </div>
 </template>
 <script>
+import Loading from "../components/Loading.vue";
 import TrailerModal from "../components/TrailerModal.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   name: "MovieDetails",
-  components: { TrailerModal },
+  components: { TrailerModal, Loading },
   data() {
     return {
       movie: {},
       showTrailerModal: false,
     };
+  },
+  computed: {
+    ...mapState(["loading"]),
   },
   methods: {
     ...mapActions(["fetchMovieDetails"]),
