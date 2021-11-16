@@ -1,6 +1,10 @@
 <template>
   <div class="movie-details">
-    <TrailerModal v-show="showTrailerModal" />
+    <TrailerModal
+      v-if="showTrailerModal"
+      @close-modal="toggleTrailerModal()"
+      :link="movie.videos.results[0].key.trim()"
+    />
     <div class="container">
       <div class="movie">
         <div class="movie--banner">
@@ -38,10 +42,15 @@
               }}{{ index === movie.genres.length - 1 ? "." : ", " }}
             </span>
           </div>
-          <button class="trailer" @click="toggleTrailerModal()">
+          <button
+            class="trailer"
+            @click="toggleTrailerModal()"
+            v-if="movie.videos && movie.videos.results.length > 0"
+          >
             <i class="fas fa-play"></i>
             Trailer
           </button>
+
           <div class="overview">
             <p v-if="movie.overview">{{ movie.overview }}</p>
             <p v-else>Sinópse não disponível</p>
@@ -71,7 +80,7 @@ export default {
   data() {
     return {
       movie: {},
-      showTrailerModal: true,
+      showTrailerModal: false,
     };
   },
   methods: {
@@ -102,7 +111,7 @@ export default {
       align-items: center;
     }
     &--banner {
-      max-width: 500px;
+      max-width: 400px;
       width: 100%;
       border-radius: 5px;
       overflow: hidden;
